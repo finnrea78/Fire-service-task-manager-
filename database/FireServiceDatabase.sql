@@ -29,14 +29,14 @@ CREATE TABLE Tasks (
 
 
 INSERT INTO FireCrew VALUES
-(1,'2020-02-01'),
-(2,'2020-02-01');
+(1,'2021-02-01'),
+(2,'2021-02-08');
 
 INSERT INTO Tasks VALUES
-(1, 'Clean the floors', false, 1, NULL, '2020-02-01', 1),
-(2, 'Empty trash can', false, 1,  NULL, '2020-02-01', 2),
-(3, 'Wash fire truck', false, 1,  NULL, '2020-02-01', 7),
-(4, 'Service fire truck', false, 1, NULL, '2020-02-01', 30);
+(1, 'Clean the floors', false, 1, NULL, '2021-02-01', 1),
+(2, 'Empty trash can', false, 1,  NULL, '2021-02-01', 2),
+(3, 'Wash fire truck', false, 1,  NULL, '2021-02-01', 7),
+(4, 'Service fire truck', false, 1, NULL, '2021-02-01', 30);
 
 INSERT INTO FireWorkers VALUES
 (1,1,"John Smith"),

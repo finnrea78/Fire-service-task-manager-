@@ -8,6 +8,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class Helper {
     private Connection conn;
     private Statement stmt;
+    private Statement stmt2;
     String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     String USER = "user";
     String PASS = "password";
@@ -53,25 +54,27 @@ public class Helper {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from Tasks");
-
+            stmt2 = conn.createStatement();
+            ResultSet rsTasks = stmt.executeQuery("select * from Tasks");
+            ResultSet rsCrew = stmt2.executeQuery("select * from FireCrew");
 
             LocalDate dateTofind = date.toLocalDate();
+            int crew = -1;
 
-            while (rs.next()) {
-
-
-
-                long daysBetween = DAYS.between(rs.getDate(6).toLocalDate(), dateTofind);
-
-                if (daysBetween%rs.getInt(7) == 0) {
-                    System.out.println(rs.getString(2));
+            while (rsCrew.next()) {
+                long daysbetween = DAYS.between(rsCrew.getDate(2).toLocalDate(), dateTofind);
+                if (daysbetween % 14 < 7) {
+                    crew = rsCrew.getInt(1);
                 }
             }
 
+            while (rsTasks.next()) {
+                long daysBetween = DAYS.between(rsTasks.getDate(6).toLocalDate(), dateTofind);
+                if (daysBetween % rsTasks.getInt(7) == 0) {
+                    System.out.println(rsTasks.getString(2) + "-" + crew);
+                }
+            }
 
-            // while(rs.next())
-            //      System.out.println(rs.getString(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
             conn.close();
 
 
@@ -89,8 +92,23 @@ public class Helper {
             } catch (SQLException se) {
                 se.printStackTrace();
             }
+
         }
     }
+
+    public void AddTask(){
+
+
+
+
+    }
+
+
+
+
+
+
+
 }
 
 
