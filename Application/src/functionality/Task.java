@@ -1,12 +1,15 @@
 package functionality;
 import DatabaseHelper.Helper;
+import com.sun.net.httpserver.Authenticator;
+
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Task {
     private Scanner sc = new Scanner(System.in);
-    Helper database = new Helper();;
+    Helper database = new Helper();
+    ;
 
 
     public void ViewTasks() {
@@ -89,8 +92,8 @@ public class Task {
                 validDates = false;
             }
 
-            if(validDates){
-                if (startDate.isAfter(endDate)){
+            if (validDates) {
+                if (startDate.isAfter(endDate)) {
                     validDates = false;
                     System.out.println("The second date you input must be after the first one. Please input valid date");
                 }
@@ -109,39 +112,44 @@ public class Task {
     }
 
 
-    public void AssignIndividual(){
+    public void AssignIndividual() {
         int year, month, day;
         int workerId;
         int taskId;
-        LocalDate date;
+        LocalDate date = null;
+        boolean validAdd = false;
 
-        System.out.println("What date is this task occurring:");
-        System.out.println("Year: ");
-        year = sc.nextInt();
-        System.out.println("Month: ");
-        month = sc.nextInt();
-        System.out.println("Day: ");
-        day = sc.nextInt();
-        System.out.println("Please input the ID of the worker: ");
-        workerId = sc.nextInt();
-        System.out.println("Please input the ID of the task: ");
-        taskId = sc.nextInt();
+        while (!validAdd) {
+            validAdd = true;
+            System.out.println("What date is this task occurring:");
+            System.out.println("Year: ");
+            year = sc.nextInt();
+            System.out.println("Month: ");
+            month = sc.nextInt();
+            System.out.println("Day: ");
+            day = sc.nextInt();
+            System.out.println("Please input the ID of the worker: ");
+            workerId = sc.nextInt();
+            System.out.println("Please input the ID of the task: ");
+            taskId = sc.nextInt();
 
-        date = LocalDate.of(year,month,day);
+            try {
+                date = LocalDate.of(year, month, day);
+            } catch (Exception e) {
+                System.out.println("That is not a valid date please input a valid one");
+                validAdd = false;
+            }
+            if (validAdd) {
+                if (date.isBefore(LocalDate.of(2021, 02, 1))) {
+                    System.out.println("Sorry, no records before 2021-02-01 please input dates after this");
+                    validAdd = false;
+                }
+            }
+            if(validAdd){
+                validAdd = database.AddIndividual(date, workerId, taskId);
+            }
+        }
 
-
-        database.AddIndividual(date, workerId,taskId);
-
-
-
-
-
-
-
+        System.out.println("Successfully added individual");
     }
-
-
-
-
-
 }

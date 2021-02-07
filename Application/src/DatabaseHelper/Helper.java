@@ -73,10 +73,13 @@ public class Helper {
                         System.out.println(rsTasks.getString(2) + " - Crew: " + crew + " - not assigned to an individual");
                     }
                 } else {
-                    if ((rsTasks.getInt(1) == 3 && serviceEngine1) || (rsTasks.getInt(1) == 4 && serviceEngine2)) {
+                    long daysBetween = DAYS.between(rsTasks.getDate(5).toLocalDate(), date);
+                    if ((rsTasks.getInt(1) == 3 && serviceEngine1 && daysBetween %
+                            rsTasks.getInt(3) == 0) || (rsTasks.getInt(1) == 4 &&
+                            serviceEngine2 && daysBetween % rsTasks.getInt(3) == 0)) {
                             System.out.println("Sorry " + rsTasks.getString(2) + " can't occur because it is being serviced this week");
                     } else {
-                        long daysBetween = DAYS.between(rsTasks.getDate(5).toLocalDate(), date);
+
                         if (daysBetween % rsTasks.getInt(3) == 0) {
                             System.out.println(rsTasks.getString(2) + " - Crew: " + crew + " - not assigned to an individual");
                         }
@@ -143,10 +146,10 @@ public class Helper {
                 boolean serviceEngine1 = false;
                 boolean serviceEngine2 = false;
 
-                if (14 <= dateToFind.getDayOfMonth() && dateToFind.getDayOfMonth() < 22) {
+                if (14 <= dateToFind.getDayOfMonth() && dateToFind.getDayOfMonth() < 21) {
                     serviceEngine1 = true;
                 }
-                if (1 <= dateToFind.getDayOfMonth() && dateToFind.getDayOfMonth() < 9) {
+                if (1 <= dateToFind.getDayOfMonth() && dateToFind.getDayOfMonth() < 8) {
                     serviceEngine2 = true;
                 }
 
@@ -265,9 +268,9 @@ public class Helper {
     }
 
 
-    public void AddIndividual(LocalDate date, int workerID, int taskID) {
+    public boolean AddIndividual(LocalDate date, int workerID, int taskID) {
 
-
+        boolean validAdd = true;
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -280,7 +283,12 @@ public class Helper {
 
             boolean taskExists = false;
             boolean working = false;
+            boolean workerExists = true;
 
+
+            if(rsWorker == null){
+                workerExists = false;
+            }
             while (rsWorker.next()) {
                 long daysbetween = DAYS.between(rsWorker.getDate(1).toLocalDate(), date);
                 if (daysbetween % 14 < 7) {
@@ -295,26 +303,39 @@ public class Helper {
                     }
                 } else {
                     long daysbetween = DAYS.between(rsTasks.getDate(1).toLocalDate(), date);
-                    if (daysbetween % rsTasks.getInt(2) < 7) {
+                    if (daysbetween % rsTasks.getInt(2) == 0) {
                         taskExists = true;
                     }
                 }
             }
 
 
-            if (working && taskExists) {
+            if (working && taskExists && workerExists) {
                 prepStmt = conn.prepareStatement("INSERT INTO Dates(DateTask, WorkerID, TaskID) VALUES (?,?,?)");
                 prepStmt.setDate(1, java.sql.Date.valueOf(date));
                 prepStmt.setInt(2, workerID);
                 prepStmt.setInt(3, taskID);
-
                 prepStmt.execute();
             } else {
-                System.out.println("The worker isn't working this week");
+                validAdd = false;
+                if(workerExists){
+                    if(!working){
+                        System.out.println("The worker isn't working today");
+                    }
+                }
+                else{
+                    System.out.println("This worker doesn't exist");
+                }
+                if(!taskExists){
+                    System.out.println("This task doesn't exist or isn't meant to be done today");
+                }
+
+
             }
             conn.close();
 
         } catch (Exception se) {
+            validAdd = false;
             se.printStackTrace();
         } finally {
             try {
@@ -330,7 +351,6 @@ public class Helper {
             }
 
         }
-
-
+        return validAdd;
     }
 }

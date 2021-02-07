@@ -60,9 +60,17 @@ INSERT INTO FireWorkers (IdCrew, Name) VALUES
 (1,"John Smith"),
 (1,"Finn Rea"),
 (1,"James arrowsmith"),
+(1,"William brown"),
+(1,"ben thomas"),
+(1,"Christal Donnie"),
+(1,"Jayson Cosmo"),
 (2,"Jess Pawson"),
 (2,"George Harrison"),
-(2,"Ella Jonson");
+(2,"Ella Jonson"),
+(2,"Heidi Harriet"),
+(2,"Baz Luana"),
+(2,"Maurice Augusta"),
+(2,"Cletus Nolan");
 
 
 
