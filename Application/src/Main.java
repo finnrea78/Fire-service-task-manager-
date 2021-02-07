@@ -18,18 +18,14 @@ public class Main {
         int choice;
 
         Task taskManagment = new Task();
+        Helper databaseHelper = new Helper();
 
-
-        //Helper database = new Helper();
-        //database.printOut();
-        //Date date = new Date(120, 1, 8);
-        //database.printOutAllTasks(date);
 
 
         System.out.println("------ Welcome to fire service manager ------");
         while (manageTasks){
-            System.out.println("Options \n (1) View tasks for a date \n (2) add new task " +
-                    "\n (3) finish manager");
+            System.out.println("Options \n (1) View tasks for a date \n (2) View all tasks between dates " +
+                    "\n (3) View all tasks \n (4) View all workers  \n (5) assign individual \n (6) finish manager");
             choice = sc.nextInt();
 
             switch (choice){
@@ -37,9 +33,18 @@ public class Main {
                     taskManagment.ViewTasks();
                     break;
                 case 2:
-
+                    taskManagment.ViewTasksBetween();
                     break;
                 case 3:
+                    databaseHelper.ViewAllTasks();
+                    break;
+                case 4:
+                    databaseHelper.ViewAllWorkers();
+                    break;
+                case 5:
+                    taskManagment.AssignIndividual();
+                    break;
+                case 6:
                     manageTasks = false;
                     break;
             }
